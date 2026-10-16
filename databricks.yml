@@ -1,0 +1,27 @@
+# Databricks Asset Bundle: define o job do projeto como código.
+# Deploy: databricks bundle deploy   |   Rodar: databricks bundle run churn_pipeline
+bundle:
+  name: client-churn
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Catálogo do Unity Catalog (Catalog Explorer mostra o nome do seu)
+  schema:
+    description: Schema onde ficam tabelas, volume e modelo
+    default: churn
+  bucket:
+    description: Bucket S3 do projeto, sem o prefixo s3://
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      # URL do seu workspace, ex.: https://dbc-1234abcd-5678.cloud.databricks.com
+      host: https://SEU-WORKSPACE.cloud.databricks.com
+    variables:
+      catalog: SEU_CATALOGO
+      bucket: SEU-BUCKET

@@ -1,0 +1,7 @@
+# Só para rodar os testes localmente; no Databricks os notebooks instalam o que falta.
+pandas
+scikit-learn
+xgboost
+mlflow
+matplotlib
+pytest

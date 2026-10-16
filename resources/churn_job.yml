@@ -1,0 +1,44 @@
+# Pipeline completo: setup → bronze → silver → treino → score.
+# Sem cluster definido, as tarefas rodam em computação serverless.
+resources:
+  jobs:
+    churn_pipeline:
+      name: churn-pipeline
+
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: ${var.schema}
+        - name: bucket
+          default: ${var.bucket}
+
+      tasks:
+        - task_key: setup
+          notebook_task:
+            notebook_path: ../src/notebooks/00_setup.py
+
+        - task_key: bronze
+          depends_on: [{ task_key: setup }]
+          notebook_task:
+            notebook_path: ../src/notebooks/01_bronze.py
+
+        - task_key: silver
+          depends_on: [{ task_key: bronze }]
+          notebook_task:
+            notebook_path: ../src/notebooks/02_silver.py
+
+        - task_key: treino
+          depends_on: [{ task_key: silver }]
+          notebook_task:
+            notebook_path: ../src/notebooks/03_treino.py
+
+        - task_key: score
+          depends_on: [{ task_key: treino }]
+          notebook_task:
+            notebook_path: ../src/notebooks/04_score.py
+
+      # Descomente para rodar toda segunda às 6h (horário de Brasília).
+      # schedule:
+      #   quartz_cron_expression: "0 0 6 ? * MON"
+      #   timezone_id: America/Sao_Paulo
